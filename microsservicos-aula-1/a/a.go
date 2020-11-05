@@ -2,12 +2,13 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/hashicorp/go-retryablehttp"
 	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
+
+	"github.com/hashicorp/go-retryablehttp"
 )
 
 type Result struct {
@@ -33,16 +34,18 @@ func process(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, result)
 }
 
-func makeHttpCall(urlMicroservice string, coupon string, ccNumber string) Result {
+func makeHttpCall(urlMicrosservice string, coupon string, ccNumber string) Result {
 
 	values := url.Values{}
 	values.Add("coupon", coupon)
 	values.Add("ccNumber", ccNumber)
 
 	retryClient := retryablehttp.NewClient()
+
 	retryClient.RetryMax = 5
 
-	res, err := retryClient.PostForm(urlMicroservice, values)
+	res, err := retryClient.PostForm(urlMicrosservice, values)
+
 	if err != nil {
 		result := Result{Status: "Servidor fora do ar!"}
 		return result
@@ -51,14 +54,13 @@ func makeHttpCall(urlMicroservice string, coupon string, ccNumber string) Result
 	defer res.Body.Close()
 
 	data, err := ioutil.ReadAll(res.Body)
+
 	if err != nil {
 		log.Fatal("Error processing result")
 	}
 
 	result := Result{}
-
 	json.Unmarshal(data, &result)
 
 	return result
-
 }
