@@ -1,4 +1,5 @@
-module github.com/codeedu/avancadev-micrservice-1dia
+
+module github.com/sSchmidtT/avancadev/filas-aula-2
 
 go 1.15
 
